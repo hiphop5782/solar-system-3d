@@ -29,8 +29,12 @@ camera.position.set(1, 2, 20);
 //light
 const ambientLight = new THREE.AmbientLight('white', 0.5);
 scene.add(ambientLight);
-const directionalLight = new THREE.DirectionalLight('white', 1);
-scene.add(directionalLight);
+//const hemisphereLight = new THREE.HemisphereLight('white', 'white', 1);
+//scene.add(hemisphereLight);
+//const directionalLight = new THREE.DirectionalLight('white', 10);
+//scene.add(directionalLight);
+const pointLight = new THREE.PointLight('white', 5);
+scene.add(pointLight);
 
 //dat.gui
 const gui = new dat.GUI();
@@ -57,7 +61,8 @@ controls.maxDistance = 40;
 //mesh
 const geometry = new THREE.SphereGeometry(1, 32, 32);
 const solarMaterial = new THREE.MeshPhongMaterial({
-    color:"red",
+    color:"rgb(255, 36, 36)",
+    side:THREE.DoubleSide,
 })
 const solar = new THREE.Mesh(geometry, solarMaterial);
 
