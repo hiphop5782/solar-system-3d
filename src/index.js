@@ -6,16 +6,39 @@ import * as dat from 'dat.gui';
 import * as THREE from 'three';
 import {TrackballControls} from 'three/examples/jsm/controls/TrackballControls';
 
+//자전(rotate) 주기 / 공전(orbit) 주기
+const sunRotate = 30;
+const mercuryRotate = 58.6, mercuryOrbit = 88;
+const venusRotate = 243, venusOrbit = 224;
+const earthRotate = 23.93 / 24, earthOrbit = 365.25;
+const moonRotate = 27.3, moonOrbit = 27.3;
+const marsRotate = 24.6 / 24, marsOrbit = 687;
+const jupiterRotate = 9.9 / 24, jupiterOrbit = 12 * 365.25;
+const saturnRotate = 10.9 / 24, saturnOrbit = 29 * 365.25;
+const uranusRotate = 17.2 / 24, uranusOrbit = 84 * 365.25;
+const neptuneRotate = 16.1 / 24, neptuneOrbit = 165 * 365.25;
+
+//texture
+// const textureLoader = new THREE.TextureLoader();
+// const sunTexture = textureLoader.load(
+//     'textures/sun.jpg',
+//     ()=>{console.log('로드 완료');},
+//     ()=>{console.log('로드 중');},
+//     ()=>{console.log('로드 에러');}
+// );
+
 //generate dom
 const renderer = new THREE.WebGLRenderer({
     antialise:true
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
+renderer.shadowMap.enabled = true;//그림자 설정
 document.body.appendChild(renderer.domElement);
 
 //generate scene
 const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x000000, 0.00008);
 
 //generate camera
 const camera = new THREE.PerspectiveCamera(
@@ -27,14 +50,18 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(1, 2, 20);
 
 //light
-const ambientLight = new THREE.AmbientLight('white', 0.5);
+const ambientLight = new THREE.AmbientLight(0x222222, 0.5);
 scene.add(ambientLight);
 //const hemisphereLight = new THREE.HemisphereLight('white', 'white', 1);
 //scene.add(hemisphereLight);
 //const directionalLight = new THREE.DirectionalLight('white', 10);
 //scene.add(directionalLight);
-const pointLight = new THREE.PointLight('white', 5);
-scene.add(pointLight);
+const sunLight = new THREE.PointLight('white', 2, 0);
+sunLight.castShadow = true;//그림자 설정
+sunLight.position.set(0, 0, 0);
+scene.add(sunLight);
+// const sunLightHelper = new THREE.PointLightHelper(sunLight);
+// scene.add(sunLightHelper);
 
 //dat.gui
 const gui = new dat.GUI();
@@ -60,120 +87,164 @@ controls.maxDistance = 40;
 
 //mesh
 const geometry = new THREE.SphereGeometry(1, 32, 32);
-const solarMaterial = new THREE.MeshPhongMaterial({
-    color:"rgb(255, 36, 36)",
+const sunMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/sun.jpg'),
     side:THREE.DoubleSide,
+    // map:sunTexture,
+    // emissive:'rgba(255,179,39, 0.5)'
 })
-const solar = new THREE.Mesh(geometry, solarMaterial);
+const sun = new THREE.Mesh(geometry, sunMaterial);
+// sun.castShadow = true;
 
 //mercury
-const mercuryMaterial = new THREE.MeshPhongMaterial({
-    color:"skyblue",
+const mercuryMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/mercury.jpg'),
 });
 const mercury = new THREE.Mesh(geometry, mercuryMaterial);
 mercury.scale.set(0.1, 0.1, 0.1);
 mercury.position.set(2, 0, 0);
+mercury.castShadow = true;
+mercury.receiveShadow = true;
 
 //venus
-const venusMaterial = new THREE.MeshPhongMaterial({
-    color:"brown"
+const venusMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/venus.jpg'),
 });
 const venus = new THREE.Mesh(geometry, venusMaterial);
 venus.scale.set(0.35, 0.35, 0.35);
 venus.position.set(4, 0, 0);
+venus.castShadow = true;
+venus.receiveShadow = true;
 
 //earth - moon
-const earthMaterial = new THREE.MeshPhongMaterial({
-    color:"dodgerblue",
+const earthMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/earth.jpg'),
 });
 const earth = new THREE.Mesh(geometry, earthMaterial);
 earth.scale.set(0.38, 0.38, 0.38);
-const moonMaterial = new THREE.MeshPhongMaterial({
-    color:"lightgray",
+earth.position.set(6, 0, 0);
+earth.castShadow = true;
+earth.receiveShadow = true;
+
+const moonMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/moon.jpg'),
 });
 const moon = new THREE.Mesh(geometry, moonMaterial);
 moon.scale.set(0.1, 0.1, 0.1);
 moon.position.set(1, 0, 0);
 
 //mars
-const marsMaterial = new THREE.MeshPhongMaterial({
-    color:"#e67e22"
+const marsMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/mars.jpg'),
 });
 const mars = new THREE.Mesh(geometry, marsMaterial);
 mars.scale.set(0.2, 0.2, 0.2);
 mars.position.set(8, 0, 0);
+mars.castShadow = true;
+mars.receiveShadow = true;
 
 //jupiter
-const jupiterMaterial = new THREE.MeshPhongMaterial({
-    color:"#f19066",
+const jupiterMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/jupiter.jpg'),
 });
 const jupiter = new THREE.Mesh(geometry, jupiterMaterial);
 jupiter.scale.set(0.6, 0.6, 0.6);
 jupiter.position.set(11, 0, 0);
+jupiter.castShadow = true;
+jupiter.receiveShadow = true;
 
 //saturn
-const saturnMaterial = new THREE.MeshPhongMaterial({
-    color:"#f7d794"
+const saturnMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/saturn.jpg'),
 });
 const saturn = new THREE.Mesh(geometry, saturnMaterial);
 saturn.scale.set(0.55, 0.55, 0.55);
 saturn.position.set(13, 0, 0);
+saturn.castShadow = true;
+saturn.receiveShadow = true;
+
+//saturn-ring
+const saturnRingGeometry = new THREE.RingGeometry(1, 2, 30, 30);
+const saturnRingMaterial = new THREE.MeshBasicMaterial({
+    //map : new THREE.TextureLoader().load('textures/saturn-ring.jpg'),
+    color:'gray',
+    side : THREE.DoubleSide
+});
+const saturnRing = new THREE.Mesh(saturnRingGeometry, saturnRingMaterial);
+// saturnRing.scale.set(0.55, 0.55, 0.55);
+saturnRing.rotation.x = THREE.MathUtils.degToRad(90);
+saturn.add(saturnRing);
 
 //uranus
-const uranusMaterial = new THREE.MeshPhongMaterial({
-    color:"#3dc1d3"
+const uranusMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/uranus.jpg'),
 });
 const uranus = new THREE.Mesh(geometry, uranusMaterial);
 uranus.scale.set(0.45, 0.45, 0.45);
 uranus.position.set(16, 0, 0);
+uranus.castShadow = true;
+uranus.receiveShadow = true;
+
+//uranus-ring
+const uranusRingGeometry = new THREE.RingGeometry(1, 2, 30, 30);
+const uranusRingMaterial = new THREE.MeshBasicMaterial({
+    //map : new THREE.TextureLoader().load('textures/uranus-ring.jpg'),
+    color:'gray',
+    side : THREE.DoubleSide
+});
+const uranusRing = new THREE.Mesh(uranusRingGeometry, uranusRingMaterial);
+uranusRing.rotation.x = THREE.MathUtils.degToRad(90);
+uranus.add(uranusRing);
 
 //neptune
-const neptuneMaterial = new THREE.MeshPhongMaterial({
-    color:"#778beb"
+const neptuneMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/neptune.jpg'),
 });
 const neptune = new THREE.Mesh(geometry, neptuneMaterial);
 neptune.scale.set(0.43, 0.43, 0.43);
 neptune.position.set(19, 0, 0);
+//neptune.castShadow = true;
+neptune.receiveShadow = true;
 
 //group
-const solarGroup1 = new THREE.Group();
-solarGroup1.add(mercury);
-const solarGroup2 = new THREE.Group();
-solarGroup2.add(venus);
+const mercuryGroup = new THREE.Group();
+mercuryGroup.add(mercury);
+const venusGroup = new THREE.Group();
+venusGroup.add(venus);
+
+const moonGroup = new THREE.Group();
+moonGroup.add(moon);
+moonGroup.position.set(6, 0, 0);
 
 const earthGroup = new THREE.Group();
+earthGroup.add(moonGroup);
 earthGroup.add(earth);
-earthGroup.add(moon);
-earthGroup.position.set(6, 0, 0);
 
-const solarGroup3 = new THREE.Group();
-solarGroup3.add(earthGroup);
+const marsGroup = new THREE.Group();
+marsGroup.add(mars);
 
-const solarGroup4 = new THREE.Group();
-solarGroup4.add(mars);
+const jupiterGroup = new THREE.Group();
+jupiterGroup.add(jupiter);
 
-const solarGroup5 = new THREE.Group();
-solarGroup5.add(jupiter);
+const saturnGroup = new THREE.Group();
+saturnGroup.add(saturn);
 
-const solarGroup6 = new THREE.Group();
-solarGroup6.add(saturn);
+const uranusGroup = new THREE.Group();
+uranusGroup.add(uranus);
 
-const solarGroup7 = new THREE.Group();
-solarGroup7.add(uranus);
-
-const solarGroup8 = new THREE.Group();
-solarGroup8.add(neptune);
+const neptuneGroup = new THREE.Group();
+neptuneGroup.add(neptune);
 
 //mesh add scene
-scene.add(solar);
-scene.add(solarGroup1);
-scene.add(solarGroup2);
-scene.add(solarGroup3);
-scene.add(solarGroup4);
-scene.add(solarGroup5);
-scene.add(solarGroup6);
-scene.add(solarGroup7);
-scene.add(solarGroup8);
+scene.add(sun);
+scene.add(mercuryGroup);
+scene.add(venusGroup);
+scene.add(earthGroup);
+scene.add(marsGroup);
+scene.add(jupiterGroup);
+scene.add(saturnGroup);
+scene.add(uranusGroup);
+scene.add(neptuneGroup);
 
 //resize event handler
 window.addEventListener('resize', ()=>{
@@ -198,15 +269,26 @@ const refresh = ()=>{
     stats.update();
 
     //rotate
-    solarGroup1.rotation.y += delta * 5;
-    solarGroup2.rotation.y += delta * 1.9555;
-    solarGroup3.rotation.y += delta * 1.2054;
-    earthGroup.rotation.y += delta * 10;
-    solarGroup4.rotation.y += delta * 0.6404;
-    solarGroup5.rotation.y += delta * 0.1097;
-    solarGroup6.rotation.y += delta * 0.02//0.0008;
-    solarGroup7.rotation.y += delta * 0.0914;
-    solarGroup8.rotation.y += delta * 0.02;
+    sun.rotation.y += delta * 10 / sunRotate;
+    mercury.rotation.y += delta * 10 / mercuryRotate;
+    venus.rotation.y += delta * 10 / venusRotate;
+    earth.rotation.y += delta * 10 / earthRotate;
+    moon.rotation.y += delta * 10 / moonRotate;
+    mars.rotation.y += delta * 10 / marsRotate;
+    jupiter.rotation.y += delta * 10 / jupiterRotate;
+    saturn.rotation.y += delta * 10 / saturnRotate;
+    uranus.rotation.y += delta * 10 / uranusRotate;
+    neptune.rotation.y += delta * 10 / neptuneRotate;
+
+    mercuryGroup.rotation.y += delta * 500 / mercuryOrbit;
+    venusGroup.rotation.y += delta * 500 / venusOrbit;
+    earthGroup.rotation.y += delta * 500 / earthOrbit;
+    moonGroup.rotation.y += delta * 500 / moonOrbit;
+    marsGroup.rotation.y += delta * 500 / marsOrbit;
+    jupiterGroup.rotation.y += delta * 500 / jupiterOrbit;
+    saturnGroup.rotation.y += delta * 500 / saturnOrbit;
+    uranusGroup.rotation.y += delta * 500 / uranusOrbit;
+    neptuneGroup.rotation.y += delta * 500 / neptuneOrbit;
     
     //render
     renderer.render(scene, camera);

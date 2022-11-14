@@ -31,6 +31,10 @@ module.exports = {
           },
           noErrorOnMissing: true,
         },
+        {
+          from:paths.src+'/textures',
+          to:'textures'
+        }
       ],
     }),
 
