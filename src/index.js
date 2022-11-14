@@ -51,8 +51,8 @@ controls.maxDistance = 40;
 //helper
 //const axesHelper = new THREE.AxesHelper(10);
 //scene.add(axesHelper);
-const gridHelper = new THREE.GridHelper(40);
-scene.add(gridHelper);
+//const gridHelper = new THREE.GridHelper(40);
+//scene.add(gridHelper);
 
 //mesh
 const geometry = new THREE.SphereGeometry(1, 32, 32);
