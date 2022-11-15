@@ -187,11 +187,17 @@ saturn.castShadow = true;
 saturn.receiveShadow = true;
 
 //saturn-ring
-const saturnRingGeometry = new THREE.RingGeometry(1, 2, 30, 30);
-const saturnRingMaterial = new THREE.MeshLambertMaterial({
-    // map : new THREE.TextureLoader().load('textures/saturn-ring.jpg'),
+const saturnRingGeometry = new THREE.RingBufferGeometry(1, 3, 64);
+const saturnRingGeometryPos = saturnRingGeometry.attributes.position;
+const saturnRingVector = new THREE.Vector3();
+for(let i=0; i < saturnRingGeometryPos.count; i++){
+    saturnRingVector.fromBufferAttribute(saturnRingGeometryPos, i);
+    saturnRingGeometry.attributes.uv.setXY(i, saturnRingVector.length() < 2 ? 0 : 1 , 1);
+}
+const saturnRingTexture = new THREE.TextureLoader().load('textures/saturn-ring.png');
+const saturnRingMaterial = new THREE.MeshBasicMaterial({
+    map : saturnRingTexture,
     color:'white',
-    opacity:0.5,
     transparent:true,
     side : THREE.DoubleSide
 });
@@ -211,19 +217,6 @@ uranus.position.set(20, 0, 0);
 uranus.castShadow = true;
 uranus.receiveShadow = true;
 
-//uranus-ring
-const uranusRingGeometry = new THREE.RingGeometry(1, 2, 30, 30);
-const uranusRingMaterial = new THREE.MeshBasicMaterial({
-    //map : new THREE.TextureLoader().load('textures/uranus-ring.jpg'),
-    color:'gray',
-    opacity:0.5,
-    transparent:true,
-    side : THREE.DoubleSide
-});
-const uranusRing = new THREE.Mesh(uranusRingGeometry, uranusRingMaterial);
-uranusRing.rotation.x = THREE.MathUtils.degToRad(90);
-uranus.add(uranusRing);
-
 //neptune
 const neptuneMaterial = new THREE.MeshBasicMaterial({
     map:new THREE.TextureLoader().load('textures/neptune.jpg'),
@@ -231,7 +224,6 @@ const neptuneMaterial = new THREE.MeshBasicMaterial({
 const neptune = new THREE.Mesh(geometry, neptuneMaterial);
 neptune.scale.set(0.43, 0.43, 0.43);
 neptune.position.set(23, 0, 0);
-neptune.rotation.z = THREE.MathUtils.degToRad(neptuneAngle);
 //neptune.castShadow = true;
 neptune.receiveShadow = true;
 
