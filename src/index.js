@@ -105,7 +105,7 @@ for(let i=0; i < 10; i++){
 }
 
 //mercury
-const mercuryMaterial = new THREE.MeshBasicMaterial({
+const mercuryMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/mercury.jpg'),
 });
 const mercury = new THREE.Mesh(geometry, mercuryMaterial);
@@ -116,7 +116,7 @@ mercury.castShadow = true;
 mercury.receiveShadow = true;
 
 //venus
-const venusMaterial = new THREE.MeshBasicMaterial({
+const venusMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/venus.jpg'),
 });
 const venus = new THREE.Mesh(geometry, venusMaterial);
@@ -127,7 +127,7 @@ venus.castShadow = true;
 venus.receiveShadow = true;
 
 //earth - moon
-const earthMaterial = new THREE.MeshBasicMaterial({
+const earthMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/earth.jpg'),
 });
 const earth = new THREE.Mesh(geometry, earthMaterial);
@@ -142,7 +142,7 @@ earth.rotation.z = earthRadian
 earth.castShadow = true;
 earth.receiveShadow = true;
 
-const moonMaterial = new THREE.MeshBasicMaterial({
+const moonMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/moon.jpg'),
 });
 const moon = new THREE.Mesh(geometry, moonMaterial);
@@ -151,7 +151,7 @@ moon.position.set(1, 0, 0);
 moon.rotation.z = THREE.MathUtils.degToRad(moonAngle);
 
 //mars
-const marsMaterial = new THREE.MeshBasicMaterial({
+const marsMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/mars.jpg'),
 });
 const mars = new THREE.Mesh(geometry, marsMaterial);
@@ -162,7 +162,7 @@ mars.castShadow = true;
 mars.receiveShadow = true;
 
 //jupiter
-const jupiterMaterial = new THREE.MeshBasicMaterial({
+const jupiterMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/jupiter.jpg'),
 });
 const jupiter = new THREE.Mesh(geometry, jupiterMaterial);
@@ -173,7 +173,7 @@ jupiter.castShadow = true;
 jupiter.receiveShadow = true;
 
 //saturn
-const saturnMaterial = new THREE.MeshBasicMaterial({
+const saturnMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/saturn.jpg'),
 });
 const saturn = new THREE.Mesh(geometry, saturnMaterial);
@@ -195,7 +195,7 @@ for(let i=0; i < saturnRingGeometryPos.count; i++){
     saturnRingGeometry.attributes.uv.setXY(i, saturnRingVector.length() < 2 ? 0 : 1 , 1);
 }
 const saturnRingTexture = new THREE.TextureLoader().load('textures/saturn-ring.png');
-const saturnRingMaterial = new THREE.MeshBasicMaterial({
+const saturnRingMaterial = new THREE.MeshStandardMaterial({
     map : saturnRingTexture,
     color:'white',
     transparent:true,
@@ -207,7 +207,7 @@ saturnRing.rotation.x = THREE.MathUtils.degToRad(90);
 saturn.add(saturnRing);
 
 //uranus
-const uranusMaterial = new THREE.MeshBasicMaterial({
+const uranusMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/uranus.jpg'),
 });
 const uranus = new THREE.Mesh(geometry, uranusMaterial);
@@ -218,7 +218,7 @@ uranus.castShadow = true;
 uranus.receiveShadow = true;
 
 //neptune
-const neptuneMaterial = new THREE.MeshBasicMaterial({
+const neptuneMaterial = new THREE.MeshStandardMaterial({
     map:new THREE.TextureLoader().load('textures/neptune.jpg'),
 });
 const neptune = new THREE.Mesh(geometry, neptuneMaterial);
@@ -291,11 +291,11 @@ scene.add(neptuneRail);
 const asteroidBelt = new THREE.Group();
 const asteroidMaterial = {
     data:[
-        new THREE.MeshBasicMaterial({color:'#2d2c2c'}),
-        new THREE.MeshBasicMaterial({color:'#3a3232'}),
-        new THREE.MeshBasicMaterial({color:'#493c3c'}),
-        new THREE.MeshBasicMaterial({color:'#5c4949'}),
-        new THREE.MeshBasicMaterial({color:'#655353'})
+        new THREE.MeshStandardMaterial({color:'#2d2c2c'}),
+        new THREE.MeshStandardMaterial({color:'#3a3232'}),
+        new THREE.MeshStandardMaterial({color:'#493c3c'}),
+        new THREE.MeshStandardMaterial({color:'#5c4949'}),
+        new THREE.MeshStandardMaterial({color:'#655353'})
     ],
     random(){
         return this.data[Math.floor(Math.random() * this.data.length)];
