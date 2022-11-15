@@ -41,7 +41,7 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(1, 2, 20);
 
 //light
-const ambientLight = new THREE.AmbientLight(0x222222, 0.5);
+const ambientLight = new THREE.AmbientLight(0x222222, 1);
 scene.add(ambientLight);
 //const hemisphereLight = new THREE.HemisphereLight('white', 'white', 1);
 //scene.add(hemisphereLight);
@@ -133,9 +133,12 @@ const earthMaterial = new THREE.MeshBasicMaterial({
 const earth = new THREE.Mesh(geometry, earthMaterial);
 earth.scale.set(0.38, 0.38, 0.38);
 earth.position.set(6, 0, 0);
+
+//earth axis rotation
 const earthRadian = THREE.MathUtils.degToRad(earthAngle);
-earth.geometry.applyMatrix4(new THREE.Matrix4().makeRotationZ(earthRadian));
-const earthAxis = new THREE.Vector3(Math.sin(-earthRadian), Math.cos(-earthRadian), 0).normalize();
+earth.rotation.z = earthRadian
+// earth.geometry.applyMatrix4(new THREE.Matrix4().makeRotationZ(earthRadian));
+// const earthAxis = new THREE.Vector3(Math.sin(-earthRadian), Math.cos(-earthRadian), 0).normalize();
 earth.castShadow = true;
 earth.receiveShadow = true;
 
@@ -164,7 +167,7 @@ const jupiterMaterial = new THREE.MeshBasicMaterial({
 });
 const jupiter = new THREE.Mesh(geometry, jupiterMaterial);
 jupiter.scale.set(0.6, 0.6, 0.6);
-jupiter.position.set(11, 0, 0);
+jupiter.position.set(14, 0, 0);
 jupiter.rotation.z = THREE.MathUtils.degToRad(jupiterAngle);
 jupiter.castShadow = true;
 jupiter.receiveShadow = true;
@@ -175,8 +178,8 @@ const saturnMaterial = new THREE.MeshBasicMaterial({
 });
 const saturn = new THREE.Mesh(geometry, saturnMaterial);
 saturn.scale.set(0.55, 0.55, 0.55);
-saturn.position.set(14, 0, 0);
-saturn.rotation.z = THREE.MathUtils.degToRad(saturnAngle);
+saturn.position.set(17, 0, 0);
+//saturn.rotation.z = THREE.MathUtils.degToRad(saturnAngle);
 // const saturnRadian = THREE.MathUtils.degToRad(saturnAngle);
 // saturn.geometry.applyMatrix4(new THREE.Matrix4().makeRotationZ(saturnRadian));
 // const saturnAxis = new THREE.Vector3(Math.sin(-saturnRadian), Math.cos(-saturnRadian), 0).normalize();
@@ -185,9 +188,11 @@ saturn.receiveShadow = true;
 
 //saturn-ring
 const saturnRingGeometry = new THREE.RingGeometry(1, 2, 30, 30);
-const saturnRingMaterial = new THREE.MeshBasicMaterial({
-    //map : new THREE.TextureLoader().load('textures/saturn-ring.jpg'),
-    color:'gray',
+const saturnRingMaterial = new THREE.MeshLambertMaterial({
+    // map : new THREE.TextureLoader().load('textures/saturn-ring.jpg'),
+    color:'white',
+    opacity:0.5,
+    transparent:true,
     side : THREE.DoubleSide
 });
 const saturnRing = new THREE.Mesh(saturnRingGeometry, saturnRingMaterial);
@@ -201,8 +206,8 @@ const uranusMaterial = new THREE.MeshBasicMaterial({
 });
 const uranus = new THREE.Mesh(geometry, uranusMaterial);
 uranus.scale.set(0.45, 0.45, 0.45);
-uranus.position.set(17, 0, 0);
-uranus.rotation.z = THREE.MathUtils.degToRad(uranusAngle);
+uranus.position.set(20, 0, 0);
+// uranus.rotation.z = THREE.MathUtils.degToRad(uranusAngle);
 uranus.castShadow = true;
 uranus.receiveShadow = true;
 
@@ -211,6 +216,8 @@ const uranusRingGeometry = new THREE.RingGeometry(1, 2, 30, 30);
 const uranusRingMaterial = new THREE.MeshBasicMaterial({
     //map : new THREE.TextureLoader().load('textures/uranus-ring.jpg'),
     color:'gray',
+    opacity:0.5,
+    transparent:true,
     side : THREE.DoubleSide
 });
 const uranusRing = new THREE.Mesh(uranusRingGeometry, uranusRingMaterial);
@@ -223,7 +230,7 @@ const neptuneMaterial = new THREE.MeshBasicMaterial({
 });
 const neptune = new THREE.Mesh(geometry, neptuneMaterial);
 neptune.scale.set(0.43, 0.43, 0.43);
-neptune.position.set(20, 0, 0);
+neptune.position.set(23, 0, 0);
 neptune.rotation.z = THREE.MathUtils.degToRad(neptuneAngle);
 //neptune.castShadow = true;
 neptune.receiveShadow = true;
@@ -256,6 +263,67 @@ uranusGroup.add(uranus);
 
 const neptuneGroup = new THREE.Group();
 neptuneGroup.add(neptune);
+
+//궤도(rail)
+const orbitMaterial = new THREE.MeshBasicMaterial({
+    color:'gray',
+    transparent:true,
+    opacity:0.3,
+    side:THREE.DoubleSide
+});
+const mercuryRail = new THREE.Mesh(new THREE.TorusGeometry(2, 0.01, 30, 100), orbitMaterial);
+mercuryRail.rotation.x = THREE.MathUtils.degToRad(90);
+scene.add(mercuryRail);
+const venusRail = new THREE.Mesh(new THREE.TorusGeometry(4, 0.01, 30, 100), orbitMaterial);
+venusRail.rotation.x = THREE.MathUtils.degToRad(90);
+scene.add(venusRail);
+const earthRail = new THREE.Mesh(new THREE.TorusGeometry(6, 0.01, 30, 100), orbitMaterial);
+earthRail.rotation.x = THREE.MathUtils.degToRad(90);
+scene.add(earthRail);
+const marsRail = new THREE.Mesh(new THREE.TorusGeometry(8, 0.01, 30, 100), orbitMaterial);
+marsRail.rotation.x = THREE.MathUtils.degToRad(90);
+scene.add(marsRail);
+const jupiterRail = new THREE.Mesh(new THREE.TorusGeometry(14, 0.01, 30, 100), orbitMaterial);
+jupiterRail.rotation.x = THREE.MathUtils.degToRad(90);
+scene.add(jupiterRail);
+const saturnRail = new THREE.Mesh(new THREE.TorusGeometry(17, 0.01, 30, 100), orbitMaterial);
+saturnRail.rotation.x = THREE.MathUtils.degToRad(90);
+scene.add(saturnRail);
+const uranusRail = new THREE.Mesh(new THREE.TorusGeometry(20, 0.01, 30, 100), orbitMaterial);
+uranusRail.rotation.x = THREE.MathUtils.degToRad(90);
+scene.add(uranusRail);
+const neptuneRail = new THREE.Mesh(new THREE.TorusGeometry(23, 0.01, 30, 100), orbitMaterial);
+neptuneRail.rotation.x = THREE.MathUtils.degToRad(90);
+scene.add(neptuneRail);
+
+const asteroidBelt = new THREE.Group();
+const asteroidMaterial = {
+    data:[
+        new THREE.MeshBasicMaterial({color:'#2d2c2c'}),
+        new THREE.MeshBasicMaterial({color:'#3a3232'}),
+        new THREE.MeshBasicMaterial({color:'#493c3c'}),
+        new THREE.MeshBasicMaterial({color:'#5c4949'}),
+        new THREE.MeshBasicMaterial({color:'#655353'})
+    ],
+    random(){
+        return this.data[Math.floor(Math.random() * this.data.length)];
+    },
+};
+for(let i=0; i < 1000; i++){
+    const asteroid = new THREE.Mesh(
+        new THREE.SphereGeometry(
+            Math.random() * 0.05 + 0.05,//size
+            Math.random() * 20,
+            Math.random() * 20
+        ), asteroidMaterial.random()
+    );
+    const angle = THREE.MathUtils.degToRad(Math.random() * 360);
+    asteroid.position.x = Math.cos(angle) * (11 + (Math.random() - 0.5) * 2);
+    asteroid.position.z = Math.sin(angle) * (11 + (Math.random() - 0.5) * 2);
+    asteroidBelt.add(asteroid);
+}
+console.log(asteroidBelt);
+scene.add(asteroidBelt);
 
 //mesh add scene
 scene.add(sun);
@@ -296,10 +364,11 @@ const refresh = ()=>{
     sun.rotation.y += delta * 10 / sunRotate;
     mercury.rotation.y += delta * 10 / mercuryRotate;
     venus.rotation.y += delta * 10 / venusRotate;
-    // earth.rotation.y += delta * 10 / earthRotate;
-    earth.rotateOnAxis(earthAxis, delta * 10 / earthRotate);
+    earth.rotation.y += delta * 10 / earthRotate;
+    // earth.rotateOnAxis(earthAxis, delta * 10 / earthRotate);
     moon.rotation.y += delta * 10 / moonRotate;
     mars.rotation.y += delta * 10 / marsRotate;
+    asteroidBelt.rotation.y += delta * 10 / 365;
     jupiter.rotation.y += delta * 10 / jupiterRotate;
     saturn.rotation.y += delta * 10 / saturnRotate;
     // saturn.rotateOnAxis(saturnAxis, delta * 10 / saturnRotate);
