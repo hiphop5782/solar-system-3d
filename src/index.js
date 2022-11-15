@@ -195,7 +195,7 @@ for(let i=0; i < saturnRingGeometryPos.count; i++){
     saturnRingGeometry.attributes.uv.setXY(i, saturnRingVector.length() < 2 ? 0 : 1 , 1);
 }
 const saturnRingTexture = new THREE.TextureLoader().load('textures/saturn-ring.png');
-const saturnRingMaterial = new THREE.MeshStandardMaterial({
+const saturnRingMaterial = new THREE.MeshBasicMaterial({
     map : saturnRingTexture,
     color:'white',
     transparent:true,
