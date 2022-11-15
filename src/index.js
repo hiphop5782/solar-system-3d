@@ -68,7 +68,7 @@ stats.domElement.style.top = 0;
 
 //controls
 const controls = new TrackballControls(camera, renderer.domElement);
-controls.maxDistance = 40;
+controls.maxDistance = 50;
 
 //helper
 //const axesHelper = new THREE.AxesHelper(10);
@@ -78,6 +78,15 @@ controls.maxDistance = 40;
 
 //mesh
 const geometry = new THREE.SphereGeometry(1, 32, 32);
+
+//milky way
+const milkywayGeometry = new THREE.SphereGeometry(80, 64, 64);
+const milkywayMaterial = new THREE.MeshBasicMaterial({
+    map:new THREE.TextureLoader().load('textures/milky-way.jpg'),
+    side:THREE.DoubleSide
+});
+const milkyWay = new THREE.Mesh(milkywayGeometry, milkywayMaterial);
+scene.add(milkyWay);
 
 //sun
 const sunMaterial = new THREE.MeshBasicMaterial({
@@ -314,7 +323,6 @@ for(let i=0; i < 1000; i++){
     asteroid.position.z = Math.sin(angle) * (11 + (Math.random() - 0.5) * 2);
     asteroidBelt.add(asteroid);
 }
-console.log(asteroidBelt);
 scene.add(asteroidBelt);
 
 //mesh add scene
