@@ -8,24 +8,15 @@ import {TrackballControls} from 'three/examples/jsm/controls/TrackballControls';
 
 //자전(rotate) 주기 / 공전(orbit) 주기
 const sunRotate = 30;
-const mercuryRotate = 58.6, mercuryOrbit = 88;
-const venusRotate = 243, venusOrbit = 224;
-const earthRotate = 23.93 / 24, earthOrbit = 365.25;
-const moonRotate = 27.3, moonOrbit = 27.3;
-const marsRotate = 24.6 / 24, marsOrbit = 687;
-const jupiterRotate = 9.9 / 24, jupiterOrbit = 12 * 365.25;
-const saturnRotate = 10.9 / 24, saturnOrbit = 29 * 365.25;
-const uranusRotate = 17.2 / 24, uranusOrbit = 84 * 365.25;
-const neptuneRotate = 16.1 / 24, neptuneOrbit = 165 * 365.25;
-
-//texture
-// const textureLoader = new THREE.TextureLoader();
-// const sunTexture = textureLoader.load(
-//     'textures/sun.jpg',
-//     ()=>{console.log('로드 완료');},
-//     ()=>{console.log('로드 중');},
-//     ()=>{console.log('로드 에러');}
-// );
+const mercuryRotate = 58.6, mercuryOrbit = 88, mercuryAngle = 0;
+const venusRotate = 243, venusOrbit = 224, venusAngle = 177.4;
+const earthRotate = 23.93 / 24, earthOrbit = 365.25, earthAngle = 23.4;
+const moonRotate = 27.3, moonOrbit = 27.3, moonAngle = 6.7;
+const marsRotate = 24.6 / 24, marsOrbit = 687, marsAngle = 25.2;
+const jupiterRotate = 9.9 / 24, jupiterOrbit = 12 * 365.25, jupiterAngle = 3.1;
+const saturnRotate = 10.9 / 24, saturnOrbit = 29 * 365.25, saturnAngle = 26.7;
+const uranusRotate = 17.2 / 24, uranusOrbit = 84 * 365.25, uranusAngle = 97.8;
+const neptuneRotate = 16.1 / 24, neptuneOrbit = 165 * 365.25, neptuneAngle = 28.3;
 
 //generate dom
 const renderer = new THREE.WebGLRenderer({
@@ -87,6 +78,8 @@ controls.maxDistance = 40;
 
 //mesh
 const geometry = new THREE.SphereGeometry(1, 32, 32);
+
+//sun
 const sunMaterial = new THREE.MeshBasicMaterial({
     map:new THREE.TextureLoader().load('textures/sun.jpg'),
     side:THREE.DoubleSide,
@@ -96,6 +89,21 @@ const sunMaterial = new THREE.MeshBasicMaterial({
 const sun = new THREE.Mesh(geometry, sunMaterial);
 // sun.castShadow = true;
 
+//sun flare
+const sunFlareMaterial = new THREE.MeshBasicMaterial({
+    color:'#ff6511',
+    opacity:0.1,
+    transparent:true,
+});
+const sunFlare = [];
+for(let i=0; i < 10; i++){
+    const flare = new THREE.Mesh(geometry, sunFlareMaterial);
+    const s = 1 + (i+1) * 0.05;
+    flare.scale.set(s, s, s);
+    sun.add(flare);
+    sunFlare.push(flare);
+}
+
 //mercury
 const mercuryMaterial = new THREE.MeshBasicMaterial({
     map:new THREE.TextureLoader().load('textures/mercury.jpg'),
@@ -103,6 +111,7 @@ const mercuryMaterial = new THREE.MeshBasicMaterial({
 const mercury = new THREE.Mesh(geometry, mercuryMaterial);
 mercury.scale.set(0.1, 0.1, 0.1);
 mercury.position.set(2, 0, 0);
+mercury.rotation.z = THREE.MathUtils.degToRad(mercuryAngle);
 mercury.castShadow = true;
 mercury.receiveShadow = true;
 
@@ -113,6 +122,7 @@ const venusMaterial = new THREE.MeshBasicMaterial({
 const venus = new THREE.Mesh(geometry, venusMaterial);
 venus.scale.set(0.35, 0.35, 0.35);
 venus.position.set(4, 0, 0);
+venus.rotation.z = THREE.MathUtils.degToRad(venusAngle);
 venus.castShadow = true;
 venus.receiveShadow = true;
 
@@ -123,6 +133,9 @@ const earthMaterial = new THREE.MeshBasicMaterial({
 const earth = new THREE.Mesh(geometry, earthMaterial);
 earth.scale.set(0.38, 0.38, 0.38);
 earth.position.set(6, 0, 0);
+const earthRadian = THREE.MathUtils.degToRad(earthAngle);
+earth.geometry.applyMatrix4(new THREE.Matrix4().makeRotationZ(earthRadian));
+const earthAxis = new THREE.Vector3(Math.sin(-earthRadian), Math.cos(-earthRadian), 0).normalize();
 earth.castShadow = true;
 earth.receiveShadow = true;
 
@@ -132,6 +145,7 @@ const moonMaterial = new THREE.MeshBasicMaterial({
 const moon = new THREE.Mesh(geometry, moonMaterial);
 moon.scale.set(0.1, 0.1, 0.1);
 moon.position.set(1, 0, 0);
+moon.rotation.z = THREE.MathUtils.degToRad(moonAngle);
 
 //mars
 const marsMaterial = new THREE.MeshBasicMaterial({
@@ -140,6 +154,7 @@ const marsMaterial = new THREE.MeshBasicMaterial({
 const mars = new THREE.Mesh(geometry, marsMaterial);
 mars.scale.set(0.2, 0.2, 0.2);
 mars.position.set(8, 0, 0);
+mars.rotation.z = THREE.MathUtils.degToRad(marsAngle);
 mars.castShadow = true;
 mars.receiveShadow = true;
 
@@ -150,6 +165,7 @@ const jupiterMaterial = new THREE.MeshBasicMaterial({
 const jupiter = new THREE.Mesh(geometry, jupiterMaterial);
 jupiter.scale.set(0.6, 0.6, 0.6);
 jupiter.position.set(11, 0, 0);
+jupiter.rotation.z = THREE.MathUtils.degToRad(jupiterAngle);
 jupiter.castShadow = true;
 jupiter.receiveShadow = true;
 
@@ -159,7 +175,11 @@ const saturnMaterial = new THREE.MeshBasicMaterial({
 });
 const saturn = new THREE.Mesh(geometry, saturnMaterial);
 saturn.scale.set(0.55, 0.55, 0.55);
-saturn.position.set(13, 0, 0);
+saturn.position.set(14, 0, 0);
+saturn.rotation.z = THREE.MathUtils.degToRad(saturnAngle);
+// const saturnRadian = THREE.MathUtils.degToRad(saturnAngle);
+// saturn.geometry.applyMatrix4(new THREE.Matrix4().makeRotationZ(saturnRadian));
+// const saturnAxis = new THREE.Vector3(Math.sin(-saturnRadian), Math.cos(-saturnRadian), 0).normalize();
 saturn.castShadow = true;
 saturn.receiveShadow = true;
 
@@ -181,7 +201,8 @@ const uranusMaterial = new THREE.MeshBasicMaterial({
 });
 const uranus = new THREE.Mesh(geometry, uranusMaterial);
 uranus.scale.set(0.45, 0.45, 0.45);
-uranus.position.set(16, 0, 0);
+uranus.position.set(17, 0, 0);
+uranus.rotation.z = THREE.MathUtils.degToRad(uranusAngle);
 uranus.castShadow = true;
 uranus.receiveShadow = true;
 
@@ -202,7 +223,8 @@ const neptuneMaterial = new THREE.MeshBasicMaterial({
 });
 const neptune = new THREE.Mesh(geometry, neptuneMaterial);
 neptune.scale.set(0.43, 0.43, 0.43);
-neptune.position.set(19, 0, 0);
+neptune.position.set(20, 0, 0);
+neptune.rotation.z = THREE.MathUtils.degToRad(neptuneAngle);
 //neptune.castShadow = true;
 neptune.receiveShadow = true;
 
@@ -255,6 +277,8 @@ window.addEventListener('resize', ()=>{
     renderer.render(scene, camera);
 });
 
+
+
 //clock
 const clock = new THREE.Clock();
 
@@ -272,11 +296,13 @@ const refresh = ()=>{
     sun.rotation.y += delta * 10 / sunRotate;
     mercury.rotation.y += delta * 10 / mercuryRotate;
     venus.rotation.y += delta * 10 / venusRotate;
-    earth.rotation.y += delta * 10 / earthRotate;
+    // earth.rotation.y += delta * 10 / earthRotate;
+    earth.rotateOnAxis(earthAxis, delta * 10 / earthRotate);
     moon.rotation.y += delta * 10 / moonRotate;
     mars.rotation.y += delta * 10 / marsRotate;
     jupiter.rotation.y += delta * 10 / jupiterRotate;
     saturn.rotation.y += delta * 10 / saturnRotate;
+    // saturn.rotateOnAxis(saturnAxis, delta * 10 / saturnRotate);
     uranus.rotation.y += delta * 10 / uranusRotate;
     neptune.rotation.y += delta * 10 / neptuneRotate;
 
